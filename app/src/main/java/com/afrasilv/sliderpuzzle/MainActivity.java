@@ -1,13 +1,14 @@
 package com.afrasilv.sliderpuzzle;
 
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afrasilv.fragments.GameFragment;
 import com.afrasilv.fragments.InitGameFragment;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
@@ -15,9 +16,9 @@ import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
-
-    private InitGameFragment mInitGameFragment;
     private FragmentManager fragmentManager;
+
+    private Fragment actualFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mInitGameFragment = InitGameFragment.newInstance();
+        actualFragment = InitGameFragment.newInstance();
         fragmentManager = getSupportFragmentManager();
 
         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -51,7 +52,23 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.add(R.id.content_frame, mInitGameFragment, mInitGameFragment.getTag());
+        fragmentTransaction.add(R.id.content_frame, actualFragment, actualFragment.getTag());
         fragmentTransaction.commit();
     }
+
+    public void changeFragment(int id) {
+        switch(id){
+            case 0:
+                actualFragment = GameFragment.newInstance();
+
+                break;
+            case 1:
+                actualFragment = InitGameFragment.newInstance();
+
+                break;
+        }
+
+        fragmentManager.beginTransaction().replace(R.id.content_frame, actualFragment, actualFragment.getTag()).commit();
+    }
+
 }
