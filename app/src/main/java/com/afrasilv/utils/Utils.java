@@ -1,6 +1,5 @@
 package com.afrasilv.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,12 +31,12 @@ public  class Utils {
      *
      * @return ArrayList of suffle pieces
      */
-    public static ArrayList<Piece> splitImage(Bitmap bitmap, int rows, int cols, Activity activity) {
+    public static ArrayList<Piece> splitImage(Bitmap bitmap, int rows, int cols, Context context) {
 
         // To store all the small image chunks in bitmap format in this list
         ArrayList<Piece> piecesList = new ArrayList<>(rows * cols);
 
-        int width = getScreenHeight(activity.getApplicationContext());
+        int width = getScreenHeight(context);
 
         bitmap=Bitmap.createScaledBitmap(bitmap, width, width, true);
 
@@ -113,9 +112,9 @@ public  class Utils {
      * Return a bitmap with all pieces
      *
      * @param imageChunks list of pieces
-     * @param cols
-     * @param rows
-     * @return
+     * @param cols number of cols that form the image
+     * @param rows number of rows that form the image
+     * @return merge image with disorder chunks
      */
     public static Bitmap mergeImage(ArrayList<Piece> imageChunks, int cols, int rows) {
 

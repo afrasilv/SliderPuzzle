@@ -2,33 +2,30 @@ package com.afrasilv.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.Display;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 
 import com.afrasilv.adapters.GameAdapter;
 import com.afrasilv.dao.Piece;
+import com.afrasilv.interfaces.OnStartDragListener;
 import com.afrasilv.sliderpuzzle.MainActivity;
 import com.afrasilv.sliderpuzzle.R;
+import com.afrasilv.utils.SimpleItemTouchHelperCallback;
 
 import java.util.ArrayList;
 
 /**
  * Created by alex on 19/05/16.
  */
-public class GameFragment extends Fragment {
+public class GameFragment extends Fragment implements OnStartDragListener {
     private ArrayList<Piece> pieceList;
 
     public static GameFragment newInstance() {
-        GameFragment fragment = new GameFragment();
-        return fragment;
+        return new GameFragment();
     }
 
     @Override
@@ -51,9 +48,18 @@ public class GameFragment extends Fragment {
         recyclerView.setLayoutManager(gaggeredGridLayoutManager);
 
         GameAdapter gameAdapter = new GameAdapter(getContext(), pieceList);
+
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(gameAdapter);
+        ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
+
         recyclerView.setAdapter(gameAdapter);
 
         return game_view;
     }
 
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+
+    }
 }

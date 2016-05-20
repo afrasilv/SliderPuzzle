@@ -19,7 +19,6 @@ import com.afrasilv.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by alex on 19/05/16.
@@ -64,7 +63,7 @@ public class InitGameFragment extends Fragment {
                             public void onSuccess() {
                                 Bitmap bitmap = ((BitmapDrawable) imgBoard.getDrawable()).getBitmap();
 
-                                ArrayList<Piece> piecesTempList =  Utils.splitImage(bitmap, maxRows, maxRows, getActivity());
+                                ArrayList<Piece> piecesTempList =  Utils.splitImage(bitmap, maxRows, maxRows, getContext());
 
                                 piecesTempList = insertBlankImage(piecesTempList);
 
