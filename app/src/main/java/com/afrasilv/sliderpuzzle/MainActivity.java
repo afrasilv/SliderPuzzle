@@ -1,6 +1,7 @@
 package com.afrasilv.sliderpuzzle;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -8,10 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afrasilv.dao.Piece;
 import com.afrasilv.fragments.GameFragment;
 import com.afrasilv.fragments.InitGameFragment;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
 
     private Fragment actualFragment;
+
+    private ArrayList<Piece> pieceList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +66,12 @@ public class MainActivity extends AppCompatActivity {
     public void changeFragment(int id) {
         switch(id){
             case 0:
+              /*  Bundle args = new Bundle();
+                args.putParcelableArrayList("listPieces", this.pieceList);
+
+*/
                 actualFragment = GameFragment.newInstance();
+                //actualFragment.setArguments(args);
 
                 break;
             case 1:
@@ -71,4 +83,11 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.content_frame, actualFragment, actualFragment.getTag()).commit();
     }
 
+    public void setPieceList(ArrayList<Piece> pieceList){
+        this.pieceList = pieceList;
+    }
+
+    public ArrayList<Piece> getPieceList(){
+        return this.pieceList;
+    }
 }

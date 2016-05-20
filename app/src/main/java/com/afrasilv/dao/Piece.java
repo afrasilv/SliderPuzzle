@@ -9,8 +9,10 @@ public class Piece {
 
     public int indexX;
     public int indexY;
+    public int initialPosition;
     public Bitmap image;
     public boolean blankImage;
+
 
     public Piece() {
     }
@@ -29,6 +31,14 @@ public class Piece {
 
     public void setIndexY(int indexY) {
         this.indexY = indexY;
+    }
+
+    public int getInitialPosition() {
+        return initialPosition;
+    }
+
+    public void setInitialPosition(int initialPosition) {
+        this.initialPosition = initialPosition;
     }
 
     public Bitmap getImage() {

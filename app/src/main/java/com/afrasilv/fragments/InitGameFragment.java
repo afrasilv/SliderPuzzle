@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.afrasilv.dao.Piece;
+import com.afrasilv.sliderpuzzle.MainActivity;
 import com.afrasilv.sliderpuzzle.R;
 import com.afrasilv.utils.Utils;
 import com.squareup.picasso.Picasso;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 public class InitGameFragment extends Fragment {
 
-    private List<Piece> pieceList;
+    private ArrayList<Piece> pieceList;
     private final int maxRows = 4;
 
 
@@ -51,9 +52,9 @@ public class InitGameFragment extends Fragment {
                 .load(R.drawable.im1)
                 .into(imgBoard);
 
-        CardView cv = (CardView) init_game_view.findViewById(R.id.init_game_button);
+        CardView mixCv = (CardView) init_game_view.findViewById(R.id.mix_image_button);
 
-        cv.setOnClickListener(new View.OnClickListener() {
+        mixCv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Picasso.with(getContext())
@@ -63,11 +64,11 @@ public class InitGameFragment extends Fragment {
                             public void onSuccess() {
                                 Bitmap bitmap = ((BitmapDrawable) imgBoard.getDrawable()).getBitmap();
 
-                                ArrayList<Bitmap> bitmapList =  Utils.splitImage(bitmap, maxRows, maxRows);
+                                ArrayList<Piece> piecesTempList =  Utils.splitImage(bitmap, maxRows, maxRows, getActivity());
 
-                                bitmapList = insertBlankImage(bitmapList);
+                                piecesTempList = insertBlankImage(piecesTempList);
 
-                                Bitmap finalImg = Utils.mergeImage(bitmapList, maxRows, maxRows);
+                                Bitmap finalImg = Utils.mergeImage(piecesTempList, maxRows, maxRows);
 
                                 imgBoard.setImageBitmap(finalImg);
                             }
@@ -78,47 +79,57 @@ public class InitGameFragment extends Fragment {
                                         .show();
                             }
                         });
+            }
+        });
 
+        CardView startGame = (CardView) init_game_view.findViewById(R.id.start_game_button);
 
-
+        startGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((pieceList == null) || (pieceList.isEmpty())){
+                   Snackbar.make(init_game_view, "You have mix the image before!", Snackbar.LENGTH_LONG)
+                           .show();
+                }
+                else{
+                    ((MainActivity) getActivity()).changeFragment(0);
+                }
             }
         });
 
         return init_game_view;
     }
 
-    public ArrayList<Bitmap> insertBlankImage(ArrayList<Bitmap> bitmapList){
+    public ArrayList<Piece> insertBlankImage(ArrayList<Piece> piecesTempList){
 
-        int blankPieceIndex = Utils.randomInt(bitmapList.size());
+        int blankPieceIndex = Utils.randomInt(piecesTempList.size());
 
-        bitmapList.remove(blankPieceIndex);
+        Piece piece = piecesTempList.get(blankPieceIndex);
+        piecesTempList.remove(blankPieceIndex);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.blankpiece);
 
-        bm=Bitmap.createScaledBitmap(bm, bitmapList.get(0).getWidth(), bitmapList.get(0).getHeight(), true);
+        piece.setBlankImage(true);
 
-        bitmapList.add(blankPieceIndex, bm);
+        piece.setImage(Bitmap.createScaledBitmap(bm, piecesTempList.get(0).getImage().getWidth(), piecesTempList.get(0).getImage().getHeight(), true));
 
-        setPieceList(bitmapList, blankPieceIndex);
+        piecesTempList.add(blankPieceIndex, piece);
 
-        return bitmapList;
+        setPieceList(piecesTempList);
+
+        return piecesTempList;
     }
 
-    public void setPieceList(ArrayList<Bitmap> bitmapList, int blankPos){
-        this.pieceList = new ArrayList<>();
 
-        for(int i=0; i<bitmapList.size(); i++){
-            Piece piece = new Piece();
-            piece.setImage(bitmapList.get(i));
-            piece.setIndexX(i % this.maxRows);
-            piece.setIndexY( (i / this.maxRows) % this.maxRows);
-
-            if(i == blankPos)
-                piece.setBlankImage(true);
-            else
-                piece.setBlankImage(false);
-
-            this.pieceList.add(piece);
+    public void setPieceList(ArrayList<Piece> piecesTempList){
+        for(int i=0; i<piecesTempList.size(); i++){
+            piecesTempList.get(i).setIndexX(i % this.maxRows);
+            piecesTempList.get(i).setIndexY( (i / this.maxRows) % this.maxRows);
         }
+
+        this.pieceList = piecesTempList;
+
+        ((MainActivity) getActivity()).setPieceList(this.pieceList);
+
     }
 }

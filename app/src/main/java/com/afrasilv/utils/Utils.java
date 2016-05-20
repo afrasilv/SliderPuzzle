@@ -1,7 +1,14 @@
 package com.afrasilv.utils;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
+import android.view.Display;
+import android.view.WindowManager;
+
+import com.afrasilv.dao.Piece;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,12 +30,17 @@ public  class Utils {
      * @param cols
      *            Image cols
      *
-     * @return ArrayList of suffle bitmaps
+     * @return ArrayList of suffle pieces
      */
-    public static ArrayList<Bitmap> splitImage(Bitmap bitmap, int rows, int cols) {
+    public static ArrayList<Piece> splitImage(Bitmap bitmap, int rows, int cols, Activity activity) {
 
         // To store all the small image chunks in bitmap format in this list
-        ArrayList<Bitmap> chunkedImage = new ArrayList<>(rows * cols);
+        ArrayList<Piece> piecesList = new ArrayList<>(rows * cols);
+
+        int width = getScreenHeight(activity.getApplicationContext());
+
+        bitmap=Bitmap.createScaledBitmap(bitmap, width, width, true);
+
 
         //Size for next chunk
         int chunkSideLength = bitmap.getHeight() / rows;
@@ -37,7 +49,23 @@ public  class Utils {
         for (int y = 0; y < rows; y++) {
             int xCoord = 0;
             for (int x = 0; x < cols; x++) {
-                chunkedImage.add(Bitmap.createBitmap(bitmap, xCoord, yCoord, chunkSideLength, chunkSideLength));
+                Piece piece = new Piece();
+                piece.setBlankImage(false);
+
+                piece.setImage(Bitmap.createBitmap(bitmap, xCoord, yCoord, chunkSideLength, chunkSideLength));
+
+                int initialPos = x;
+                if(y!=0) {
+                    if(x!=0)
+                        initialPos = initialPos + (y*rows);
+                    else
+                        initialPos = rows * y;
+                }
+
+                piece.setInitialPosition(initialPos + 1);
+
+                piecesList.add(piece);
+
                 xCoord += chunkSideLength;
             }
 
@@ -45,10 +73,29 @@ public  class Utils {
         }
 
         //shuffle arrays
-        Collections.shuffle(chunkedImage);
+        Collections.shuffle(piecesList);
 
-        return chunkedImage;
+        return piecesList;
     }
+
+    private static int getScreenHeight(Context context) {
+        int height;
+
+        if (android.os.Build.VERSION.SDK_INT >= 13) {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            height = size.y;
+        } else {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            height = display.getHeight();  // deprecated
+        }
+
+        return height;
+    }
+
 
     /**
      * Returns a random number
@@ -70,10 +117,10 @@ public  class Utils {
      * @param rows
      * @return
      */
-    public static Bitmap mergeImage(ArrayList<Bitmap> imageChunks, int cols, int rows) {
+    public static Bitmap mergeImage(ArrayList<Piece> imageChunks, int cols, int rows) {
 
         // create a bitmap of a size which can hold the complete image after merging
-        Bitmap bitmap = Bitmap.createBitmap(imageChunks.get(0).getWidth() * cols, imageChunks.get(0).getHeight() * rows, Bitmap.Config.ARGB_4444);
+        Bitmap bitmap = Bitmap.createBitmap(imageChunks.get(0).getImage().getWidth() * cols, imageChunks.get(0).getImage().getHeight() * rows, Bitmap.Config.ARGB_4444);
 
         // create a canvas for drawing all those small images
         Canvas canvas = new Canvas(bitmap);
@@ -87,7 +134,7 @@ public  class Utils {
         for (int y = 0; y < rows; ++y) {
             int xCoord = 0;
             for (int x = 0; x < cols; ++x) {
-                currentChunk = imageChunks.get(count);
+                currentChunk = imageChunks.get(count).getImage();
                 canvas.drawBitmap(currentChunk, xCoord, yCoordinates[x], null);
                 xCoord += currentChunk.getWidth();
                 yCoordinates[x] += currentChunk.getHeight();
