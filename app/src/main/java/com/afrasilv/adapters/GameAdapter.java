@@ -99,75 +99,12 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.PieceViewHolde
 
         @Override
         public void onClick(View view) {
+            boolean change = checkNextTo(getAdapterPosition());
+
             Piece piece = itemList.get(getAdapterPosition());
 
-            int posX = piece.getIndexX();
-            int posY = piece.getIndexY();
-            boolean change = false;
-
-            if(posX != 0){
-                if(itemList.get(getAdapterPosition()-1).getBlankImage()){
-                    int pos = getAdapterPosition()-1;
-                    Piece blankPiece = itemList.get(pos);
-                    itemList.remove(pos);
-
-                    piece.setIndexX(blankPiece.getIndexX());
-                    piece.setIndexY(blankPiece.getIndexY());
-                    blankPiece.setIndexX(posX);
-                    blankPiece.setIndexY(posY);
-
-                    itemList.add(pos, piece);
-                    itemList.set(getAdapterPosition(), blankPiece);
-                    change = true;
-                }
-            }
-            if((!change) && (posX != maxRows -1)){
-                if(itemList.get(getAdapterPosition()+1).getBlankImage()){
-                    int pos = getAdapterPosition()+1;
-                    Piece blankPiece = itemList.get(pos);
-                    itemList.remove(pos);
-
-                    piece.setIndexX(blankPiece.getIndexX());
-                    piece.setIndexY(blankPiece.getIndexY());
-                    blankPiece.setIndexX(posX);
-                    blankPiece.setIndexY(posY);
-
-                    itemList.set(getAdapterPosition(), blankPiece);
-                    itemList.add(pos, piece);
-                    change = true;
-                }
-            }
-            if((!change) && (posY != 0)){
-                if(itemList.get(getAdapterPosition()-maxRows).getBlankImage()){
-                    int pos = getAdapterPosition()-maxRows;
-                    Piece blankPiece = itemList.get(pos);
-                    itemList.remove(pos);
-
-                    piece.setIndexX(blankPiece.getIndexX());
-                    piece.setIndexY(blankPiece.getIndexY());
-                    blankPiece.setIndexX(posX);
-                    blankPiece.setIndexY(posY);
-
-                    itemList.add(pos, piece);
-                    itemList.set(getAdapterPosition(), blankPiece);
-                    change = true;
-                }
-            }
-            if((!change) && (posY != maxRows -1)){
-                if(itemList.get(getAdapterPosition()+maxRows).getBlankImage()){
-                    int pos = getAdapterPosition()+maxRows;
-                    Piece blankPiece = itemList.get(pos);
-                    itemList.remove(pos);
-
-                    piece.setIndexX(blankPiece.getIndexX());
-                    piece.setIndexY(blankPiece.getIndexY());
-                    blankPiece.setIndexX(posX);
-                    blankPiece.setIndexY(posY);
-
-                    itemList.set(getAdapterPosition(), blankPiece);
-                    itemList.add(pos, piece);
-                    change = true;
-                }
+            if((!change) && (!piece.getBlankImage())){
+                change = checkRowAndCol(piece);
             }
 
             if(change) {
@@ -186,6 +123,208 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.PieceViewHolde
             }
 
         }
+
+        public boolean checkNextTo(int clickPos){
+            Piece piece = itemList.get(clickPos);
+
+            int posX = piece.getIndexX();
+            int posY = piece.getIndexY();
+
+            if(posX != 0){
+                if(itemList.get(getAdapterPosition()-1).getBlankImage()){
+                    int pos = getAdapterPosition()-1;
+                    Piece blankPiece = itemList.get(pos);
+                    itemList.remove(pos);
+
+                    piece.setIndexX(blankPiece.getIndexX());
+                    piece.setIndexY(blankPiece.getIndexY());
+                    blankPiece.setIndexX(posX);
+                    blankPiece.setIndexY(posY);
+
+                    itemList.add(pos, piece);
+                    itemList.set(getAdapterPosition(), blankPiece);
+                    return true;
+                }
+            }
+            if(posX != maxRows -1){
+                if(itemList.get(getAdapterPosition()+1).getBlankImage()){
+                    int pos = getAdapterPosition()+1;
+                    Piece blankPiece = itemList.get(pos);
+                    itemList.remove(pos);
+
+                    piece.setIndexX(blankPiece.getIndexX());
+                    piece.setIndexY(blankPiece.getIndexY());
+                    blankPiece.setIndexX(posX);
+                    blankPiece.setIndexY(posY);
+
+                    itemList.set(getAdapterPosition(), blankPiece);
+                    itemList.add(pos, piece);
+                    return true;
+                }
+            }
+            if(posY != 0){
+                if(itemList.get(getAdapterPosition()-maxRows).getBlankImage()){
+                    int pos = getAdapterPosition()-maxRows;
+                    Piece blankPiece = itemList.get(pos);
+                    itemList.remove(pos);
+
+                    piece.setIndexX(blankPiece.getIndexX());
+                    piece.setIndexY(blankPiece.getIndexY());
+                    blankPiece.setIndexX(posX);
+                    blankPiece.setIndexY(posY);
+
+                    itemList.add(pos, piece);
+                    itemList.set(getAdapterPosition(), blankPiece);
+                    return true;
+                }
+            }
+            if(posY != maxRows -1){
+                if(itemList.get(getAdapterPosition()+maxRows).getBlankImage()){
+                    int pos = getAdapterPosition()+maxRows;
+                    Piece blankPiece = itemList.get(pos);
+                    itemList.remove(pos);
+
+                    piece.setIndexX(blankPiece.getIndexX());
+                    piece.setIndexY(blankPiece.getIndexY());
+                    blankPiece.setIndexX(posX);
+                    blankPiece.setIndexY(posY);
+
+                    itemList.set(getAdapterPosition(), blankPiece);
+                    itemList.add(pos, piece);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        public boolean checkRowAndCol(Piece piece){
+            int posX;
+            int posY;
+
+            boolean blankSameRowOrCol = false;
+
+            //checkCols
+            int i = 0;
+            while((!blankSameRowOrCol) && (i<maxRows)){
+                if(itemList.get(i+(piece.getIndexY() * maxRows)).getBlankImage()){
+                    blankSameRowOrCol = true;
+                }
+                i++;
+            }
+            if(blankSameRowOrCol){
+                int blankX = i;
+                int indexY = piece.getIndexY();
+                if(blankX > piece.getIndexX()) {
+                    while (i > 1) {
+                        int pos = i + (indexY * maxRows) - 1;
+                        Piece pieceOneToMove = itemList.get(pos);
+                        itemList.remove(pos);
+
+                        Piece pieceTwoToMove = itemList.get(pos-1);
+
+                        posX = pieceTwoToMove.getIndexX();
+                        posY = pieceTwoToMove.getIndexY();
+
+                        pieceTwoToMove.setIndexX(pieceOneToMove.getIndexX());
+                        pieceTwoToMove.setIndexY(pieceOneToMove.getIndexY());
+                        pieceOneToMove.setIndexX(posX);
+                        pieceOneToMove.setIndexY(posY);
+
+                        itemList.set(pos -1, pieceOneToMove);
+                        itemList.add(pos, pieceTwoToMove);
+
+                        i--;
+                    }
+                }
+                else{
+                    while (i < maxRows) {
+                        int pos = i + (indexY * maxRows) -1;
+                        Piece pieceOneToMove = itemList.get(pos);
+                        itemList.remove(pos);
+
+                        Piece pieceTwoToMove = itemList.get(pos);
+
+                        posX = pieceTwoToMove.getIndexX();
+                        posY = pieceTwoToMove.getIndexY();
+
+                        pieceTwoToMove.setIndexX(pieceOneToMove.getIndexX());
+                        pieceTwoToMove.setIndexY(pieceOneToMove.getIndexY());
+                        pieceOneToMove.setIndexX(posX);
+                        pieceOneToMove.setIndexY(posY);
+
+                        itemList.set(pos, pieceTwoToMove);
+                        itemList.add(pos+1, pieceOneToMove);
+
+                        i++;
+                    }
+                }
+                 return true;
+            }else {
+                //Check Rows
+                i = 0;
+                while((!blankSameRowOrCol) && (i<maxRows)){
+                    int a = piece.getIndexX() +( i * maxRows);
+                    if(itemList.get(piece.getIndexX() +( i * maxRows)).getBlankImage()){
+                        blankSameRowOrCol = true;
+                        break;
+                    }
+                    i++;
+                }
+                if(blankSameRowOrCol) {
+                    int blankY = i;
+                    int indexX = piece.getIndexX();
+                    if (blankY > piece.getIndexY()) {
+                        while (i > 0) {
+                            int pos = piece.getIndexX() +( i * maxRows);
+                            Piece pieceOneToMove = itemList.get(pos);
+                            itemList.remove(pos);
+
+                            Piece pieceTwoToMove = itemList.get(pos - maxRows);
+
+                            posX = pieceTwoToMove.getIndexX();
+                            posY = pieceTwoToMove.getIndexY();
+
+                            pieceTwoToMove.setIndexX(pieceOneToMove.getIndexX());
+                            pieceTwoToMove.setIndexY(pieceOneToMove.getIndexY());
+                            pieceOneToMove.setIndexX(posX);
+                            pieceOneToMove.setIndexY(posY);
+
+                            itemList.set(pos - maxRows, pieceOneToMove);
+                            itemList.add(pos, pieceTwoToMove);
+
+                            i--;
+                        }
+                    } else {
+                        while (i < maxRows -1) {
+                            int pos = piece.getIndexX() +( i * maxRows);
+                            Piece pieceOneToMove = itemList.get(pos);
+                            Piece pieceTwoToMove = itemList.get(pos+maxRows);
+
+                            itemList.remove(pos+maxRows);
+
+
+                            posX = pieceTwoToMove.getIndexX();
+                            posY = pieceTwoToMove.getIndexY();
+
+                            pieceTwoToMove.setIndexX(pieceOneToMove.getIndexX());
+                            pieceTwoToMove.setIndexY(pieceOneToMove.getIndexY());
+                            pieceOneToMove.setIndexX(posX);
+                            pieceOneToMove.setIndexY(posY);
+
+                            itemList.set(pos, pieceTwoToMove);
+                            itemList.add(pos+maxRows, pieceOneToMove);
+
+                            i++;
+                        }
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         @Override
         public void onItemSelected() {

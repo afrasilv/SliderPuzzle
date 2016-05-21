@@ -65,7 +65,9 @@ public class InitGameFragment extends Fragment {
 
                                 ArrayList<Piece> piecesTempList =  Utils.splitImage(bitmap, maxRows, maxRows, getContext());
 
-                                piecesTempList = insertBlankImage(piecesTempList);
+                                //piecesTempList = insertBlankImage(piecesTempList);
+
+                                setPieceList(piecesTempList);
 
                                 Bitmap finalImg = Utils.mergeImage(piecesTempList, maxRows, maxRows);
 
@@ -115,6 +117,7 @@ public class InitGameFragment extends Fragment {
         piecesTempList.add(blankPieceIndex, piece);
 
         setPieceList(piecesTempList);
+
 
         return piecesTempList;
     }

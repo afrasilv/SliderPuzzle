@@ -2,12 +2,14 @@ package com.afrasilv.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.WindowManager;
 
 import com.afrasilv.dao.Piece;
+import com.afrasilv.sliderpuzzle.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +72,19 @@ public  class Utils {
 
             yCoord += chunkSideLength;
         }
+
+        int blankPieceIndex = piecesList.size()-1;
+
+        Piece piece = piecesList.get(blankPieceIndex);
+        piecesList.remove(blankPieceIndex);
+
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.blankpiece);
+
+        piece.setBlankImage(true);
+
+        piece.setImage(Bitmap.createScaledBitmap(bm, piecesList.get(0).getImage().getWidth(), piecesList.get(0).getImage().getHeight(), true));
+
+        piecesList.add(blankPieceIndex, piece);
 
         //shuffle arrays
         Collections.shuffle(piecesList);
@@ -143,4 +158,6 @@ public  class Utils {
 
         return bitmap;
     }
+
+
 }
