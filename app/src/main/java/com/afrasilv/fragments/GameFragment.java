@@ -23,6 +23,7 @@ import java.util.ArrayList;
  */
 public class GameFragment extends Fragment implements OnStartDragListener {
     private ArrayList<Piece> pieceList;
+    private GameAdapter gameAdapter;
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -33,7 +34,6 @@ public class GameFragment extends Fragment implements OnStartDragListener {
         super.onCreate(savedInstanceState);
 
         pieceList = ((MainActivity) getActivity()).getPieceList();
-
     }
 
     @Override
@@ -50,7 +50,7 @@ public class GameFragment extends Fragment implements OnStartDragListener {
         StaggeredGridLayoutManager gaggeredGridLayoutManager = new StaggeredGridLayoutManager(maxRows, 1);
         recyclerView.setLayoutManager(gaggeredGridLayoutManager);
 
-        GameAdapter gameAdapter = new GameAdapter(getContext(), pieceList);
+        gameAdapter = new GameAdapter(getContext(), pieceList);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(gameAdapter);
         ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(callback);
@@ -61,8 +61,14 @@ public class GameFragment extends Fragment implements OnStartDragListener {
         return game_view;
     }
 
-    @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+    public Object[] getItemList(){
+        return gameAdapter.getItemList();
+    }
 
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {}
+
+    public void setSolutionList(ArrayList<String> solutionList){
+        gameAdapter.setSolutionList(solutionList);
     }
 }

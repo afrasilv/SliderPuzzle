@@ -13,7 +13,6 @@ public class Piece {
     public Bitmap image;
     public boolean blankImage;
 
-
     public Piece() {
     }
 
@@ -57,8 +56,4 @@ public class Piece {
         this.blankImage = blankImage;
     }
 
-    public void movePiece(int indexX, int indexY){
-        this.indexX = indexX;
-        this.indexY = indexY;
-    }
 }

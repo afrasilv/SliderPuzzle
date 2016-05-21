@@ -40,8 +40,8 @@ public  class Utils {
 
         int width = getScreenHeight(context);
 
+        //Scale bitmap with diaplay size
         bitmap=Bitmap.createScaledBitmap(bitmap, width, width, true);
-
 
         //Size for next chunk
         int chunkSideLength = bitmap.getHeight() / rows;

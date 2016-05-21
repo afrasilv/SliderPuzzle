@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="blue_pressed">#3246B7</color>
     <color name="blue">#4962F0</color>
+    <color name="red_pressed">#d32f2f</color>
+    <color name="red">#f44336</color>
 </resources>

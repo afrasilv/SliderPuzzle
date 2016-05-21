@@ -67,6 +67,7 @@ public class InitGameFragment extends Fragment {
 
                                 ArrayList<Piece> piecesTempList =  Utils.splitImage(bitmap, maxRows, maxRows, getContext());
 
+                                //insert blank piece
                                 //piecesTempList = insertBlankImage(piecesTempList);
 
                                 setPieceList(piecesTempList);
@@ -103,6 +104,11 @@ public class InitGameFragment extends Fragment {
         return init_game_view;
     }
 
+    /**
+     * Method for change a random piece for a blank piece
+     * @param piecesTempList list of pieces
+     * @return list of pieces with a blank piece
+     */
     public ArrayList<Piece> insertBlankImage(ArrayList<Piece> piecesTempList){
 
         int blankPieceIndex = Utils.randomInt(piecesTempList.size());
