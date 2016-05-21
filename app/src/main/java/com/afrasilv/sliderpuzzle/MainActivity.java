@@ -1,7 +1,10 @@
 package com.afrasilv.sliderpuzzle;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,8 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afrasilv.dao.Piece;
 import com.afrasilv.fragments.GameFragment;
@@ -18,7 +24,9 @@ import com.afrasilv.fragments.InitGameFragment;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,11 +51,40 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new MaterialDialog.Builder(MainActivity.this)
+                MaterialDialog md = new MaterialDialog.Builder(MainActivity.this)
                         .title(R.string.app_name)
-                        .content("Under construction... Maybe one day.")
-                        .positiveText("Ok")
-                        .show();
+                        .customView(R.layout.settings_dialog_layout, false)
+                        .positiveText(R.string.ok)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                CheckBox cbhints = (CheckBox) dialog.findViewById(R.id.checkbos_hints);
+
+                                addSharedPref("show_hints", String.valueOf(cbhints.isChecked()));
+
+                                EditText editText = (EditText) dialog.findViewById(R.id.input_rowcols);
+
+                                addSharedPref("num_rowscols", editText.getText().toString());
+
+                            }
+                        })
+                        .build();
+
+                CheckBox cbhints = (CheckBox) md.findViewById(R.id.checkbos_hints);
+
+                String checkValue = getSharedPref("show_hints");
+                if(!checkValue.isEmpty()) {
+                    boolean checkValueFromPref = Boolean.valueOf(checkValue);
+                    cbhints.setChecked(checkValueFromPref);
+                }
+
+                EditText editText = (EditText) md.findViewById(R.id.input_rowcols);
+
+                String numberRowCols = getSharedPref("num_rowscols");
+                if(!numberRowCols.isEmpty())
+                    editText.setText(numberRowCols);
+
+                md.show();
             }
         });
 
@@ -67,6 +104,24 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
 
         fragmentStack.push(actualFragment);
+    }
+
+    public void addSharedPref(String name, String value) {
+        SharedPreferences pref = this.getSharedPreferences("settingspref", MODE_PRIVATE);
+
+        // We need an editor object to make changes
+        SharedPreferences.Editor edit = pref.edit();
+
+        edit.putString(name, value);
+
+        // Commit the changes
+        edit.apply();
+    }
+
+    public String getSharedPref(String name){
+        SharedPreferences pref = getSharedPreferences("settingspref", MODE_PRIVATE);
+
+        return pref.getString(name, "");
     }
 
     public void changeFragment(int id) {

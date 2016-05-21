@@ -44,7 +44,10 @@ public class GameFragment extends Fragment implements OnStartDragListener {
         RecyclerView recyclerView = (RecyclerView) game_view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
-        StaggeredGridLayoutManager gaggeredGridLayoutManager = new StaggeredGridLayoutManager(4, 1);
+        String numRowsCols = ((MainActivity) getActivity()).getSharedPref("num_rowscols");
+        int maxRows = Integer.valueOf(numRowsCols);
+
+        StaggeredGridLayoutManager gaggeredGridLayoutManager = new StaggeredGridLayoutManager(maxRows, 1);
         recyclerView.setLayoutManager(gaggeredGridLayoutManager);
 
         GameAdapter gameAdapter = new GameAdapter(getContext(), pieceList);

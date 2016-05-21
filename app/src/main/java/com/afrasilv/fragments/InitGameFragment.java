@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class InitGameFragment extends Fragment {
 
     private ArrayList<Piece> pieceList;
-    private final int maxRows = 4;
+    private int maxRows;
 
 
     public static InitGameFragment newInstance() {
@@ -62,6 +62,8 @@ public class InitGameFragment extends Fragment {
                             @Override
                             public void onSuccess() {
                                 Bitmap bitmap = ((BitmapDrawable) imgBoard.getDrawable()).getBitmap();
+
+                                getMaxRows();
 
                                 ArrayList<Piece> piecesTempList =  Utils.splitImage(bitmap, maxRows, maxRows, getContext());
 
@@ -122,6 +124,11 @@ public class InitGameFragment extends Fragment {
         return piecesTempList;
     }
 
+    public void getMaxRows(){
+        String numRowsCols = ((MainActivity) getActivity()).getSharedPref("num_rowscols");
+
+        this.maxRows =  Integer.valueOf(numRowsCols);
+    }
 
     public void setPieceList(ArrayList<Piece> piecesTempList){
         for(int i=0; i<piecesTempList.size(); i++){

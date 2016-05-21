@@ -34,7 +34,7 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Game Image"
+                android:text="@string/game_image"
                 android:textSize="@dimen/normal_size_text"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/imageView"
@@ -59,12 +59,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="START GAME!"
+            android:text="@string/start_game"
             android:textSize="@dimen/normal_size_text"
             android:textStyle="bold"
             android:layout_centerHorizontal="true"
             android:layout_alignBottom="@+id/imageView"
-            android:foregroundGravity="center_vertical|clip_vertical|center_horizontal"></TextView>
+            android:foregroundGravity="center_vertical|clip_vertical|center_horizontal"/>
 
         </android.support.v7.widget.CardView>
 
@@ -85,12 +85,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="MIX IMAGE!"
+            android:text="@string/mix_image"
             android:textSize="@dimen/normal_size_text"
             android:textStyle="bold"
             android:layout_centerHorizontal="true"
             android:layout_alignBottom="@+id/imageView"
-            android:foregroundGravity="center_vertical|clip_vertical|center_horizontal"></TextView>
+            android:foregroundGravity="center_vertical|clip_vertical|center_horizontal"/>
 
     </android.support.v7.widget.CardView>
 </LinearLayout>

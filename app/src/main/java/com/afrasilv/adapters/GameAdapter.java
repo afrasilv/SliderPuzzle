@@ -1,6 +1,7 @@
 package com.afrasilv.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.afrasilv.dao.Piece;
 import com.afrasilv.interfaces.ItemTouchHelperAdapter;
 import com.afrasilv.interfaces.ItemTouchHelperViewHolder;
+import com.afrasilv.sliderpuzzle.MainActivity;
 import com.afrasilv.sliderpuzzle.R;
 
 import java.util.Collections;
@@ -25,10 +27,17 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.PieceViewHolde
     private List<Piece> itemList;
     private Context context;
     private int maxRows = 4;
+    private boolean showHints = true;
 
     public GameAdapter(Context context, List<Piece> itemList) {
         this.itemList = itemList;
         this.context = context;
+
+        String numRowsCols = ((MainActivity) context).getSharedPref("num_rowscols");
+        maxRows = Integer.valueOf(numRowsCols);
+
+        String boolHints = ((MainActivity) context).getSharedPref("show_hints");
+        showHints = Boolean.valueOf(boolHints);
     }
 
     @Override
@@ -40,8 +49,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.PieceViewHolde
 
     @Override
     public void onBindViewHolder(PieceViewHolders holder, int position) {
-        String text = String.valueOf(itemList.get(position).getInitialPosition());
-        holder.initialPosition.setText(text);
+        if(showHints) {
+            String text = String.valueOf(itemList.get(position).getInitialPosition());
+            holder.initialPosition.setText(text);
+        }
 
         holder.pieceImage.setImageBitmap(itemList.get(position).getImage());
     }
@@ -89,12 +100,14 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.PieceViewHolde
 
         public TextView initialPosition;
         public ImageView pieceImage;
+        public CardView cardView;
 
         public PieceViewHolders(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             initialPosition = (TextView) itemView.findViewById(R.id.initial_position);
             pieceImage = (ImageView) itemView.findViewById(R.id.piece_image);
+            cardView = (CardView) itemView.findViewById(R.id.piece_cv);
         }
 
         @Override

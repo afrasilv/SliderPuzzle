@@ -93,21 +93,21 @@ public  class Utils {
     }
 
     private static int getScreenHeight(Context context) {
-        int height;
+        int width;
 
         if (android.os.Build.VERSION.SDK_INT >= 13) {
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
-            height = size.y;
+            width = size.x;
         } else {
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
-            height = display.getHeight();  // deprecated
+            width = display.getWidth();  // deprecated
         }
 
-        return height;
+        return width;
     }
 
 
